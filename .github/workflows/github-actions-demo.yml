@@ -18,7 +18,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Test Docker action
         id: hello
-        uses: DmitryKuzmenko/test@gh-actions-test
+        uses: "./.github/actions/ci-container"
         with:
             who-to-greet: 'EVERYONE'
       - name: Get the output time
