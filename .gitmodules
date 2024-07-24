@@ -1,3 +1,0 @@
-[submodule "pvs_datalogger"]
-	path = pvs_datalogger
-	url = git@github.com:SunPower/pvs_datalogger.git
