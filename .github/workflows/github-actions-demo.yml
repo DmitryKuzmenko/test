@@ -34,7 +34,3 @@ jobs:
             who-to-greet: 'EVERYONE'
       - name: Get the output time
         run: echo "TIME ${{ steps.hello.outputs.time }}"
-      - name: Export env variable
-        run: export ASDF=asdf
-      - name: Test env variable
-        run: echo "ASDF: ${ASDF}"
