@@ -19,4 +19,5 @@ jobs:
       - name: Export env variable
         run: export ASDF=asdf
       - name: Test env variable
-        run: echo "ASDF: ${ASDF}"
+        run: |
+          echo "ASDF: ${ASDF}"
