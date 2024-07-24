@@ -17,7 +17,16 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Export env variable
-        run: export ASDF=asdf
+        run: export VAR=VALUE
       - name: Test env variable
         run: |
-          echo "ASDF: ${ASDF}"
+          echo "VAR: ${VAR}"
+      - name: Env config
+        run: |
+          echo "VARVAR=value" >> $GITHUB_ENV
+      - name: Test bash env
+        run: |
+          echo $VARVAR
+      - name: Test wf env
+        run: |
+          echo ${{ env.VARVAR }}
