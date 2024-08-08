@@ -1,7 +1,7 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
-  pull_request: 
+  pull_request:
     types:
       - opened
       - reopened
@@ -41,3 +41,34 @@ jobs:
       - name: GH env
         run: |
           env | grep GITHUB | sort
+
+  good_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Just print env
+        run: |
+          env
+
+  bad_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail this step
+        run: |
+          no-such-command
+
+  report:
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - bad_job
+      - good_job
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!\nGood Job: ${{ needs.good_job.result }}\nBad job: ${{ needs.bad_job.result }}'
+            })
