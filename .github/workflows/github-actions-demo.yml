@@ -45,9 +45,11 @@ jobs:
       - name: GH env
         run: |
           env | grep GITHUB | sort
-      - name: GH event
+      - name: GH context
+        env:
+          GH: ${{ toJson(github)}}
         run: |
-          echo -e "Github context:\n${{ toJson(github.event) }}"
+          echo -e "Github context:\n$GH"
   report:
     runs-on: ubuntu-latest
     needs:
