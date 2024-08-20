@@ -46,6 +46,12 @@ jobs:
       - name: GH event
         run: |
           echo "Event: ${{ github.event }}"
+  report:
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - Explore-GitHub-Actions
+    steps:
       - uses: actions/github-script@v6
         with:
           script: |
@@ -53,7 +59,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 CI is done!'
+              body: '👋 CI result: ${{ needs.Explore-GitHub-Actions.result }}.'
             })
 
   # good_job:
