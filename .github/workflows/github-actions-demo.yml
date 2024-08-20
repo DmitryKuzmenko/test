@@ -8,6 +8,7 @@ on:
       - synchronize
       - labeled
       - unlabeled
+      - edited
 jobs:
   Explore-GitHub-Actions:
     if: github.event.label.name == 'deploy' || endsWith(github.event.pull_request.title, '[deploy]')
