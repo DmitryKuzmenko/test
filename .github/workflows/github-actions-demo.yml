@@ -11,7 +11,9 @@ on:
       - edited
 jobs:
   Explore-GitHub-Actions:
-    if: github.event.label.name == 'deploy' || endsWith(github.event.pull_request.title, '[deploy]')
+    if: |
+      github.event.label.name == 'deploy' ||
+      endsWith(github.event.pull_request.title, '[deploy]')
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
