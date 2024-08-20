@@ -1,0 +1,12 @@
+name: Issue Comment Test
+on:
+  issue_comment:
+    types:
+      - created
+      - deleted
+      - edited
+jobs:
+  up:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "WORKS!""
