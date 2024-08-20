@@ -10,3 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "WORKS!""
+      - name: GH context
+        env:
+          GH: ${{ toJson(github)}}
+        run: |
+          echo -e "Github context:\n$GH"
