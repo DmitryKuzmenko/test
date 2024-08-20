@@ -12,6 +12,7 @@ on:
   issue_comment: 
     types: 
       - created
+
 env:
   labelDeploy: ${{ github.event.label.name == 'deploy' }}
   titleDeploy: ${{ endsWith(github.event.pull_request.title, '[deploy]') }}
