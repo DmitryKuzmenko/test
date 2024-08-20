@@ -9,6 +9,9 @@ on:
       - labeled
       - unlabeled
       - edited
+env:
+  labelDeploy: ${{ github.event.label.name == 'deploy' }}
+  titleDeploy: ${{ endsWith(github.event.pull_request.title, '[deploy]') }}
 jobs:
   Explore-GitHub-Actions:
     if: |
@@ -65,7 +68,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 CI result: ${{ needs.Explore-GitHub-Actions.result }}.'
+              body: '👋 CI result: ${{ needs.Explore-GitHub-Actions.result }}.\nlabelDeploy: ${{ env.labelDeploy }}\ntitleDeploy: ${{ env.titleDeploy }}'
             })
 
   # good_job:
