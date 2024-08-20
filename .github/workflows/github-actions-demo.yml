@@ -6,8 +6,10 @@ on:
       - opened
       - reopened
       - synchronize
+      - labeled
 jobs:
   Explore-GitHub-Actions:
+    if: ${{ github.event.label.name == 'deploy' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -41,6 +43,9 @@ jobs:
       - name: GH env
         run: |
           env | grep GITHUB | sort
+      - name: GH event
+        run: |
+          echo "Event: ${{ github.event }}"
 
   # good_job:
   #   runs-on: ubuntu-latest
