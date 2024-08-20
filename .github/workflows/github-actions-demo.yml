@@ -7,9 +7,10 @@ on:
       - reopened
       - synchronize
       - labeled
+      - unlabeled
 jobs:
   Explore-GitHub-Actions:
-    if: ${{ github.event.label.name == 'deploy' }}
+    if: github.event.label.name == 'deploy' || endsWith(github.event.pull_request.title, '[deploy]')
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -48,11 +49,11 @@ jobs:
           echo "Event: ${{ github.event }}"
   report:
     runs-on: ubuntu-latest
-    if: always()
     needs:
       - Explore-GitHub-Actions
+    if: needs.Explore-GitHub-Actions.result != 'skipped'
     steps:
-      - uses: actions/github-script@v6
+      - uses: actions/github-script
         with:
           script: |
             github.rest.issues.createComment({
