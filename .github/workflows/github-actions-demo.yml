@@ -10,15 +10,15 @@ on:
       - unlabeled
       - edited
   issue_comment: 
-env:
+# env:
   # labelDeploy: ${{ github.event.label.name == 'deploy' }}
   # titleDeploy: ${{ endsWith(github.event.pull_request.title, '[deploy]') }}
 jobs:
   Explore-GitHub-Actions:
-    if: |
+    if: true
       # github.event.label.name == 'deploy' ||
       # endsWith(github.event.pull_request.title, '[deploy]') ||
-      true
+      # true
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
