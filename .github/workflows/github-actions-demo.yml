@@ -11,13 +11,13 @@ on:
       - edited
   issue_comment: 
 env:
-  labelDeploy: ${{ github.event.label.name == 'deploy' }}
-  titleDeploy: ${{ endsWith(github.event.pull_request.title, '[deploy]') }}
+  # labelDeploy: ${{ github.event.label.name == 'deploy' }}
+  # titleDeploy: ${{ endsWith(github.event.pull_request.title, '[deploy]') }}
 jobs:
   Explore-GitHub-Actions:
     if: |
-      github.event.label.name == 'deploy' ||
-      endsWith(github.event.pull_request.title, '[deploy]') ||
+      # github.event.label.name == 'deploy' ||
+      # endsWith(github.event.pull_request.title, '[deploy]') ||
       true
     runs-on: ubuntu-latest
     steps:
