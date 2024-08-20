@@ -46,7 +46,7 @@ jobs:
           env | grep GITHUB | sort
       - name: GH event
         run: |
-          echo "Event: ${{ github.event }}"
+          echo -e "Github context:\n${{ toJson(github.event) }}"
   report:
     runs-on: ubuntu-latest
     needs:
