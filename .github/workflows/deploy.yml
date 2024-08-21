@@ -13,19 +13,19 @@ jobs:
   deploy-job:
     runs-on: ubuntu-latest
     if: |
-      (
+      github.event.pull_request.state == 'open' && (
         contains(github.event.pull_request.labels.*.name, 'deploy') ||
         endsWith(github.event.pull_request.title, '[deploy]')
       ) && (
         contains(fromJSON('["opened", "reopened", "synchronize"]'), github.event.action) ||
-        (github.event.action == 'labeled' && github.event.label.name == 'deploy') ||
-        (github.event.action == 'edited' && endsWith(github.event.pull_request.title, '[deploy]'))
+        github.event.action == 'labeled' && github.event.label.name == 'deploy' ||
+        github.event.action == 'edited' && endsWith(github.event.pull_request.title, '[deploy]')
       )
     steps:
       - run: echo "Start"
       - name: GH context
         env:
-          GH: ${{ toJson(github)}}
+          GH: ${{ toJson(github)}} ${{ github.event.pull_request.state }}
         run: |
           echo -e "Github context:\n$GH"
   report-comment:
