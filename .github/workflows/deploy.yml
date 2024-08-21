@@ -28,6 +28,22 @@ jobs:
           GH: ${{ toJson(github)}} ${{ github.event.pull_request.state }}
         run: |
           echo -e "Github context:\n$GH"
+      - name: Fail step
+        id: fail-step
+        run: |
+          asdfasdfasdf
+      - uses: actions/github-script@v7
+        name: comment after failure
+        if: always()
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 CI result: ${{ job.status }}.'
+            })
+
   report-comment:
     runs-on: ubuntu-latest
     needs:
