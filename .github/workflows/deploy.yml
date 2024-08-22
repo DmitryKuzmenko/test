@@ -28,10 +28,10 @@ jobs:
           GH: ${{ toJson(github)}} ${{ github.event.pull_request.state }}
         run: |
           echo -e "Github context:\n$GH"
-      - name: Fail step
-        id: fail-step
-        run: |
-          asdfasdfasdf
+      # - name: Fail step
+      #   id: fail-step
+      #   run: |
+      #     asdfasdfasdf
       - uses: actions/github-script@v7
         name: comment after failure
         if: always()
