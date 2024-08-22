@@ -40,7 +40,7 @@ jobs:
             const status = "${{ job.status }}";
             let body = `Deployment result: ${status}`;
             if (status == "success") {
-              body += "\nSome variable: ${{ github.event.pull_request.url }}"
+              body += "\nSome variable: ${{ github.event.pull_request.url }}--${{ github.event.pull_request.head }}"
             }
             github.rest.issues.createComment({
               issue_number: context.issue.number,
