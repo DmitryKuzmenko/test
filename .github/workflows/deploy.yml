@@ -8,7 +8,9 @@ on:
       - synchronize
       - labeled
       - edited
-
+env:
+  SOME_VAR: some value
+  EMPTY_VAR:
 jobs:
   deploy-job:
     runs-on: ubuntu-latest
@@ -40,7 +42,7 @@ jobs:
             const status = "${{ job.status }}";
             let body = `Deployment result: ${status}`;
             if (status == "success") {
-              body += "\nSome variable: ${{ github.event.pull_request.url }}--${{ github.event.pull_request.head }}"
+              body += "\nSome variable: ${{ github.event.pull_request.url }}--${{ env.SOME_VAR }}\nAlso here is empty var value: ${{ env.EMPTY_VAR }}"
             }
             github.rest.issues.createComment({
               issue_number: context.issue.number,
