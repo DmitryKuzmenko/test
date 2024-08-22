@@ -37,8 +37,13 @@ jobs:
         if: always()
         with:
           script: |
-            const res = "CI result: ${{ job.status }}"
-            const body = `Here we insert body: ${res}`
+            const status = "${{ job.status }}";
+            let body;
+            if (status == "success") {
+              body = `Good CI result: ${status}`
+            } else {
+              body = `Bad CI result: ${status}`
+            }
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
