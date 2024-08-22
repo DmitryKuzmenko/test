@@ -37,8 +37,8 @@ jobs:
         if: always()
         with:
           script: |
-            let res = "CI result: ${{ job.status }}"
-            let body = `Here we insert body: ${body}`
+            const res = "CI result: ${{ job.status }}"
+            const body = `Here we insert body: ${res}`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
