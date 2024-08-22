@@ -10,7 +10,6 @@ on:
       - edited
 env:
   SOME_VAR: some value
-  EMPTY_VAR:
 jobs:
   deploy-job:
     runs-on: ubuntu-latest
