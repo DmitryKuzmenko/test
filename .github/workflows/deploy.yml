@@ -38,15 +38,13 @@ jobs:
         with:
           script: |
             const status = "${{ job.status }}";
-            let body;
+            let body = `Deployment result: ${status}`;
             if (status == "success") {
-              body = `Good CI result: ${status}`
-            } else {
-              body = `Bad CI result: ${status}`
+              body += "\nSome variable: ${{ github.event.pull_request.url }}"
             }
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `${body}`
+              body: body
             })
