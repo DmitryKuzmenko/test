@@ -49,14 +49,30 @@ jobs:
               repo: context.repo.repo,
               body: body
             })
+  js-job:
+    name: Test JS Job
+    runs-on: ubuntu-latest
+    needs: deploy-job
+    steps:
+      - name: Test JS Job
+        id: js-job
+        uses: ./.github/actions/js-action
+        with:
+          name: tester
+          payload: '{ "key": "value", "key2": "value2" }'
   report-job:
     needs: deploy-job
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - run: npm install netlify
       - uses: actions/github-script@v7
         name: set check
         with:
           script: |
+            const netlify = require('netlify');
             var run = true;
             var count = 60;
             async function countdown() {
