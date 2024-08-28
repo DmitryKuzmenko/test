@@ -1,0 +1,12 @@
+name: 'JS Action'
+description: 'Test JS Action'
+inputs:
+  name:
+    description: 'name'
+    required: true
+  payload:
+    description: 'payload'
+    required: true
+runs:
+  using: 'node20'
+  main: 'index.js'
