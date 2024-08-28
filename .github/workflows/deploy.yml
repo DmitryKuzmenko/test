@@ -74,7 +74,6 @@ jobs:
         name: set check
         with:
           script: |
-            const netlify = require('netlify');
             var run = true;
             var count = 60;
             async function countdown() {
