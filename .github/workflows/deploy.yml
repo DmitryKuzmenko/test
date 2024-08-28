@@ -49,3 +49,32 @@ jobs:
               repo: context.repo.repo,
               body: body
             })
+  report-job:
+    needs: deploy-job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        name: set check
+        with:
+          script: |
+            var run = true;
+            var count = 60;
+            async function countdown() {
+              console.log(`Countdown tick: ${count}`);
+              await new Promise((f) => setTimeout(f, 1000));
+              count--;
+              if (count <= 0) {
+                run = false;
+              }
+              console.log(`Countdown done: ${count}`);
+            }
+            async function test() {
+              console.log("Start countdown");
+              while (run) {
+                await countdown();
+              }
+              console.log("Stop countdown");
+            }
+            console.log("START");
+            await test();
+            console.log("DONE");
