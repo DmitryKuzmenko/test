@@ -60,8 +60,9 @@ jobs:
         run: |
           set -x
           pwd
-          ls -hal /home/runner/work/test/test/.github/actions/js-action
+          ls -hal /home/runner/work/test/test/.github/actions/js-action || true
           ls -hal ./
+          find .
       - name: Test JS Job
         id: js-job
         uses: ./.github/actions/js-action
