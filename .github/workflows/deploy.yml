@@ -69,7 +69,7 @@ jobs:
             console.log("Importing custom script");
             const { default: netlify_wait } = await import('${{ github.workspace }}/.github/scripts/netlify_wait.js');
             console.log("Imported custom script. Calling...");
-            await netlify_wait({core, "${{ env.SITE_ID }}", "${{ secrets.N_TOKEN }}", "${{ env.TITLE }}""});
+            await netlify_wait({core, "${{ env.SITE_ID }}", "${{ secrets.N_TOKEN }}", "${{ env.TITLE }}"});
             console.log("Done");
 
   js-job:
