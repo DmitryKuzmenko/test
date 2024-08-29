@@ -52,7 +52,7 @@ try {
     console.log("Sleeping 2 sec");
     await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log("Sleeping done, updating status");
-    deployment = await client.getSiteDeployment({
+    deployment = await client.getSiteDeploy({
       site_id: site_id,
       deploy_id: deploy_id,
     });
