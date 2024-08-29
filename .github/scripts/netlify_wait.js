@@ -58,6 +58,7 @@ export default async function netlify_wait(core, site_id, title, token) {
         deployment.error_message == null
       })`
     );
+    core.setFailed("Test core.setFailed");
   } catch (error) {
     core.setFailed(error.message);
   }
