@@ -11,7 +11,7 @@ try {
   const netlify_payload = core.getInput("payload");
   const token = core.getInput("token");
   // const branch = github.context.payload.pull_request.head.ref;
-  branch = "feature/PEWEB-175-custom-domain-for-api-gw";
+  const branch = "feature/PEWEB-175-custom-domain-for-api-gw";
 
   const client = new NetlifyAPI(token);
 
