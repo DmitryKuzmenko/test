@@ -25,6 +25,26 @@ try {
   console.log(`Filtered # ${deployments.length}`);
   console.log(deployments);
 
+  // Output:
+  // state: 'ready',
+  //     Statuses:
+  //          "new" "pending_review" "accepted" "rejected" "enqueued" "building" "uploading" "uploaded"
+  //          "preparing" "prepared" "processing" "processed" "ready" "error" "retrying"
+  // deploy_ssl_url: 'https://feature-peweb-175-custom-domain-for-api-gw--sportdog.netlify.app',
+  // deploy_time: null (in progress) or <int> (if done)
+  // error_message: null (success) or str (if error)
+  var deployment = deployments[0];
+  console.log(
+    `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
+  );
+  console.log(`deploy url: ${deployment.deploy_ssl_url}`);
+  console.log(`deploy time: ${deployment.deploy_time}`);
+  console.log(
+    `error message: ${deployment.error_message} (== null: ${
+      deployment.error_message == null
+    })`
+  );
+
   // Get the JSON webhook payload for the event that triggered the workflow
   // const payload = JSON.stringify(github.context.payload, undefined, 2);
   // console.log(`The event payload: ${payload}`);
