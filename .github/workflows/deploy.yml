@@ -11,6 +11,7 @@ on:
 env:
   SOME_VAR: some value
   SITE_ID: 28291f48-2de2-4c95-a222-07e0a5feaa22
+  TITLE: gha-fullstack-deploy
 jobs:
   deploy-job:
     runs-on: ubuntu-latest
@@ -65,6 +66,7 @@ jobs:
           id: ${{ env.SITE_ID }}
           payload: '{ "key": "value", "key2": "value2" }'
           token: ${{ secrets.N_TOKEN }}
+          title: ${{ env.TITLE }}
   report-job:
     needs: deploy-job
     runs-on: ubuntu-latest
