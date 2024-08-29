@@ -6,7 +6,7 @@ import https from "node:https";
 
 try {
   const name = core.getInput("name");
-  const id = core.getInput("id");
+  const site_id = core.getInput("id");
   const title = core.getInput("title");
   const netlify_payload = core.getInput("payload");
   const token = core.getInput("token");
@@ -17,7 +17,7 @@ try {
 
   console.log("Calling listSiteDeploys");
   let deployments = await client.listSiteDeploys({
-    site_id: id,
+    site_id: site_id,
     branch: branch,
   });
   console.log(`Deployments # ${deployments.length}`);
@@ -34,6 +34,8 @@ try {
   // deploy_time: null (in progress) or <int> (if done)
   // error_message: null (success) or str (if error)
   var deployment = deployments[0];
+  var deploy_id = deploy.id;
+  var in_progress = deployment.deploy_time == null;
   console.log(
     `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
   );
@@ -45,6 +47,29 @@ try {
     })`
   );
 
+  in_progress = true;
+  while (in_progress) {
+    console.log("Sleeping 2 sec");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log("Sleeping done, updating status");
+    deployment = await client.getSiteDeployment({
+      site_id: site_id,
+      deploy_id: deploy_id,
+    });
+    in_progress = deployment.deploy_time == null;
+    console.log(`Got update. In progress: ${in_progress}`);
+  }
+
+  console.log(
+    `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
+  );
+  console.log(`deploy url: ${deployment.deploy_ssl_url}`);
+  console.log(`deploy time: ${deployment.deploy_time}`);
+  console.log(
+    `error message: ${deployment.error_message} (== null: ${
+      deployment.error_message == null
+    })`
+  );
   // Get the JSON webhook payload for the event that triggered the workflow
   // const payload = JSON.stringify(github.context.payload, undefined, 2);
   // console.log(`The event payload: ${payload}`);
