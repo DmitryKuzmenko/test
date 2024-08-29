@@ -64,7 +64,7 @@ jobs:
           name: tester
           id: ${{ env.SITE_ID }}
           payload: '{ "key": "value", "key2": "value2" }'
-          token: ${{ secrets.n-token }}
+          token: ${{ secrets.N_TOKEN }}
   report-job:
     needs: deploy-job
     runs-on: ubuntu-latest
