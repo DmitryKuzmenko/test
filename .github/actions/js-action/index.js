@@ -11,9 +11,9 @@ try {
   const payload = JSON.stringify(github.context.payload, undefined, 2);
   console.log(`The event payload: ${payload}`);
   console.log(`Head Ref: ${github.context.payload.pull_request.head.ref}`);
-  const client = new NetlifyAPI("nfp_6oiUkxrMJ4Kh1zhoGTARfLAMzbtVnbPC3e67");
-  const sites = await client.listSites();
-  console.log(sites);
+  // const client = new NetlifyAPI("nfp_6oiUkxrMJ4Kh1zhoGTARfLAMzbtVnbPC3e67");
+  // const sites = await client.listSites();
+  // console.log(sites);
 
   console.log("Trying HTTP post");
   let xhr = new XMLHttpRequest();
