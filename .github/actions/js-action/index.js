@@ -15,6 +15,7 @@ try {
 
   const client = new NetlifyAPI(token);
 
+  console.log("Calling listSiteDeploys");
   let deployments = await client.listSiteDeploys({
     site_id: id,
     branch: branch,
