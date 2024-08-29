@@ -23,7 +23,7 @@ try {
   console.log(`Deployments # ${deployments.length}`);
   deployments = deployments.filter((deployment) => deployment.title == title);
   console.log(`Filtered # ${deployments.length}`);
-  console.log(deployments);
+  // console.log(deployments);
 
   // Output:
   // state: 'ready',
@@ -34,7 +34,7 @@ try {
   // deploy_time: null (in progress) or <int> (if done)
   // error_message: null (success) or str (if error)
   var deployment = deployments[0];
-  var deploy_id = deploy.id;
+  var deploy_id = deployment.id;
   var in_progress = deployment.deploy_time == null;
   console.log(
     `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
