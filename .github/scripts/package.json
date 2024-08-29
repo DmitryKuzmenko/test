@@ -1,0 +1,16 @@
+{
+  "name": "js-action",
+  "version": "1.0.0",
+  "main": "netlify_wait.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "netlify": "^13.1.21"
+  }
+}
