@@ -1,6 +1,6 @@
 import { NetlifyAPI } from "netlify";
 
-module.exports = async ({ core, site_id, title, token }) => {
+module.exports = async (core, site_id, title, token) => {
   try {
     // const branch = github.context.payload.pull_request.head.ref;
     const branch = "feature/PEWEB-175-custom-domain-for-api-gw";
