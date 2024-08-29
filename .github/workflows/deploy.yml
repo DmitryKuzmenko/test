@@ -62,7 +62,7 @@ jobs:
         uses: ./.github/actions/js-action
         with:
           name: tester
-          id: ${{ env.ID }}
+          id: ${{ env.SITE_ID }}
           payload: '{ "key": "value", "key2": "value2" }'
           token: ${{ secrets.n-token }}
   report-job:
