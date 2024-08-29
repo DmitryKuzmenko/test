@@ -10,6 +10,7 @@ on:
       - edited
 env:
   SOME_VAR: some value
+  SITE_ID: 28291f48-2de2-4c95-a222-07e0a5feaa22
 jobs:
   deploy-job:
     runs-on: ubuntu-latest
@@ -61,7 +62,9 @@ jobs:
         uses: ./.github/actions/js-action
         with:
           name: tester
+          id: ${{ env.ID }}
           payload: '{ "key": "value", "key2": "value2" }'
+          token: ${{ secrets.n-token }}
   report-job:
     needs: deploy-job
     runs-on: ubuntu-latest
