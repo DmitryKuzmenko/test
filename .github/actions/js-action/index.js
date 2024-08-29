@@ -20,8 +20,9 @@ try {
     site_id: id,
     branch: branch,
   });
-  console.log(deployments);
+  console.log(`Deployments # ${deployments.length}`);
   deployments = deployments.filter((deployment) => deployment.title == title);
+  console.log(`Filtered # ${deployments.length}`);
   console.log(deployments);
 
   // Get the JSON webhook payload for the event that triggered the workflow
