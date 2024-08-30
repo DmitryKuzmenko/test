@@ -1,9 +1,10 @@
 import { NetlifyAPI } from "netlify";
 
 // module.exports = async (core, site_id, title, token) => {
-export default async function netlify_wait(core, site_id, title, token) {
+export default async function netlify_wait(core, site_name, site_id, title, token) {
   try {
     console.log(`core: ${core}`);
+    console.log(`site_name: ${site_name}`);
     console.log(`site_id: ${site_id}`);
     console.log(`title: ${title}`);
     console.log(`token: ${token}`);

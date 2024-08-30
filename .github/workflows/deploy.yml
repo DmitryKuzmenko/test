@@ -56,16 +56,34 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-job
     outputs:
-      site-url: ${{ steps.site-url.outputs.site-url }}
+      devlogin-url: ${{ steps.deploy-action.outputs.devlogin-url }}
+      petsafe-url: ${{ steps.deploy-action.outputs.petsafe-url }}
+      sportdog-url: ${{ steps.deploy-action.outputs.sportdog-url }}
+      kurgo-url: ${{ steps.deploy-action.outputs.kurgo-url }}
+      invisiblefence-url: ${{ steps.deploy-action.outputs.invisiblefence-url }}
+    strategy:
+      matrix:
+        include:
+          - name: devlogin
+            id: 8539d742-1926-418a-81de-eb7db9c15793
+          - name: petsafe
+            id: 8cd5e483-40c1-43d6-8459-fd5531b94aa8
+          - name: sportdog
+            id: 28291f48-2de2-4c95-a222-07e0a5feaa22
+          - name: kurgo
+            id: 5c214f8e-4401-49b1-a561-d0f5bbc503d5
+          - name: invisiblefence
+            id: 423b273d-fe1d-4dd8-bba9-5f4d6d79c529
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: "20.x"
-      # - run: npm install netlify
+      - working-directory: ./.github/scripts/
+        run: |
+          npm install
       - uses: actions/github-script@v7
-        # working-directory: ./.github/scripts/
         name: check netlify status
         id: site-url
         with:
@@ -73,15 +91,21 @@ jobs:
             console.log("Importing custom script");
             const { default: netlify_wait } = await import('${{ github.workspace }}/.github/scripts/netlify_wait.js');
             console.log("Imported custom script. Calling...");
-            await netlify_wait(core, "${{ env.SITE_ID }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
+            await netlify_wait(core, "${{ matrix.name }}", "${{ matrix.id }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
             console.log("Done");
+      - id: deploy-action
+        run: echo "${{ matrix.name }}-url=${{ steps.site-url.outputs.site-url }}" >> "$GITHUB_OUTPUT"
 
   test-output:
     runs-on: ubuntu-latest
     needs: js-script
     steps:
       - run: |
-          echo "OUTPUT: ${{ needs.js-script.outputs.site-url }}"
+          echo "OUT: devlogin: ${{ needs.js-script.outputs.devlogin-url }}"
+          echo "OUT: petsafe: ${{ needs.js-script.outputs.petsafe-url }}"
+          echo "OUT: sportdog: ${{ needs.js-script.outputs.sportdog-url }}"
+          echo "OUT: kurgo: ${{ needs.js-script.outputs.kurgo-url }}"
+          echo "OUT: invisiblefence: ${{ needs.js-script.outputs.invisiblefence-url }}"
 
   js-job:
     name: Test JS Job
