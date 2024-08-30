@@ -55,6 +55,8 @@ jobs:
     name: Test JS script step
     runs-on: ubuntu-latest
     needs: deploy-job
+    outputs:
+      site-url: ${{ steps.site-url.outputs.site-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,6 +66,7 @@ jobs:
       - run: npm install netlify
       - uses: actions/github-script@v7
         name: check netlify status
+        id: site-url
         with:
           script: |
             console.log("Importing custom script");
@@ -71,6 +74,13 @@ jobs:
             console.log("Imported custom script. Calling...");
             await netlify_wait(core, "${{ env.SITE_ID }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
             console.log("Done");
+
+  test-output:
+    runs-on: ubuntu-latest
+    needs: js-script
+    steps:
+      - run: |
+          echo "OUTPUT: ${{ needs.js-script.outputs.site-url }}"
 
   js-job:
     name: Test JS Job
