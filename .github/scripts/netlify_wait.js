@@ -18,6 +18,7 @@ export default async function netlify_wait(core, site_id, title, token) {
       branch: branch,
     });
     console.log(`Deployments # ${deployments.length}`);
+    console.log(deployments);
     deployments = deployments.filter((deployment) => deployment.title == title);
     console.log(`Filtered # ${deployments.length}`);
 
