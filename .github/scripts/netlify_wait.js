@@ -40,7 +40,7 @@ export default async function netlify_wait(core, site_name, site_id, title, toke
     in_progress = true;
     while (in_progress) {
       console.log("Sleeping 2 sec");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
       console.log("Sleeping done, updating status");
       deployment = await client.getSiteDeploy({
         site_id: site_id,
@@ -48,6 +48,7 @@ export default async function netlify_wait(core, site_name, site_id, title, toke
       });
       in_progress = deployment.deploy_time == null;
       console.log(`Got update. In progress: ${in_progress}`);
+      console.log(deployment)
     }
 
     console.log(
