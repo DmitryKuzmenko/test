@@ -1,7 +1,13 @@
 import { NetlifyAPI } from "netlify";
 
 // module.exports = async (core, site_id, title, token) => {
-export default async function netlify_wait(core, site_name, site_id, title, token) {
+export default async function netlify_wait(
+  core,
+  site_name,
+  site_id,
+  title,
+  token
+) {
   try {
     console.log(`core: ${core}`);
     console.log(`site_name: ${site_name}`);
@@ -25,6 +31,32 @@ export default async function netlify_wait(core, site_name, site_id, title, toke
 
     var deployment = deployments[0];
     var deploy_id = deployment.id;
+
+    function in_progress(deployment) {
+      /**
+       * Netlify Deploy state is enum. Possible values are:
+       * "new" "pending_review" "accepted" "rejected" "enqueued" "building" "uploading" "uploaded" "preparing" "prepared" "processing" "processed" "ready" "error" "retrying"
+       * 
+       * There is no specific field in the deploy data set that let us know is the process done or still in progress.
+       * 
+       * By analyzing existing deploys states here we use the following logic:
+       *  - When deploy is done Netlify sets the `deploy_time` field to a non-`null` value.
+       *  - If error occurred Netlify sets the `error_message` to a non-`null` string.
+       *  - Special case of a canceled deploy because of no changes could be determined by the specific error message:
+       *    "Failed during stage 'checking build content for changes': Canceled build due to no content change"
+       *    
+       * Relevant examples:
+       *  - state: 'error', error_message: "Failed during stage 'building site': Command did not finish within the time limit", deploy_time: null,
+       *  - state: 'error', error_message: "Failed during stage 'checking build content for changes': Canceled build due to no content change", deploy_time: null,
+       *  - state: 'error', error_message: 'Canceled build', deploy_time: null,
+       *  - state: 'error', error_message: 'Skipped', deploy_time: null,
+       *  - state: 'new', error_message: null, deploy_time: null,
+       *  - state: 'prepared', error_message: 'Canceled build', deploy_time: null,
+       *  - state: 'ready', error_message: null, deploy_time: 333,
+       */
+      return deployment.deploy_time == null && deployment.error_message == null;
+    }
+
     var in_progress = deployment.deploy_time == null;
     console.log(
       `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
@@ -48,7 +80,7 @@ export default async function netlify_wait(core, site_name, site_id, title, toke
       });
       in_progress = deployment.deploy_time == null;
       console.log(`Got update. In progress: ${in_progress}`);
-      console.log(deployment)
+      console.log(deployment);
     }
 
     console.log(
@@ -61,7 +93,7 @@ export default async function netlify_wait(core, site_name, site_id, title, toke
         deployment.error_message == null
       })`
     );
-    core.setOutput('site-url', deployment.deploy_ssl_url);
+    core.setOutput("site-url", deployment.deploy_ssl_url);
   } catch (error) {
     core.setFailed(error.message);
   }

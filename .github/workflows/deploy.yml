@@ -82,7 +82,7 @@ jobs:
           node-version: "20.x"
       - working-directory: ./.github/scripts/
         run: |
-          npm install
+          npm install ./.github/scripts/netlify_wait.js
       - uses: actions/github-script@v7
         name: check netlify status
         id: site-url
