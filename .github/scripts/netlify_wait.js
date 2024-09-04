@@ -14,7 +14,10 @@ export default async function netlify_wait(
     console.log(`site_id: ${site_id}`);
     console.log(`title: ${title}`);
     console.log(`token: ${token}`);
-    // const branch = github.context.payload.pull_request.head.ref;
+    const head_ref = github.head_ref;
+    console.log(`head ref: ${token}`);
+    const payload_branch = github.context.payload.pull_request.head.ref;
+    console.log(`payload head ref: ${token}`);
     const branch = "feature/PEWEB-175-custom-domain-for-api-gw";
 
     const client = new NetlifyAPI(token);
