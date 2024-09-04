@@ -80,9 +80,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "20.x"
-      - working-directory: ./.github/scripts/
-        run: |
-          npm install ./.github/scripts/netlify_wait.js
+      - run: |
+          yarn add -W ./.github/scripts/
       - uses: actions/github-script@v7
         name: check netlify status
         id: site-url
