@@ -35,19 +35,19 @@ export default async function netlify_wait(
     var deployment = deployments[0];
     var deploy_id = deployment.id;
 
-    function in_progress(deployment) {
+    function deploy_in_progress(deployment) {
       /**
        * Netlify Deploy state is enum. Possible values are:
        * "new" "pending_review" "accepted" "rejected" "enqueued" "building" "uploading" "uploaded" "preparing" "prepared" "processing" "processed" "ready" "error" "retrying"
-       * 
+       *
        * There is no specific field in the deploy data set that let us know is the process done or still in progress.
-       * 
+       *
        * By analyzing existing deploys states here we use the following logic:
        *  - When deploy is done Netlify sets the `deploy_time` field to a non-`null` value.
        *  - If error occurred Netlify sets the `error_message` to a non-`null` string.
        *  - Special case of a canceled deploy because of no changes could be determined by the specific error message:
        *    "Failed during stage 'checking build content for changes': Canceled build due to no content change"
-       *    
+       *
        * Relevant examples:
        *  - state: 'error', error_message: "Failed during stage 'building site': Command did not finish within the time limit", deploy_time: null,
        *  - state: 'error', error_message: "Failed during stage 'checking build content for changes': Canceled build due to no content change", deploy_time: null,
@@ -60,7 +60,7 @@ export default async function netlify_wait(
       return deployment.deploy_time == null && deployment.error_message == null;
     }
 
-    var in_progress = deployment.deploy_time == null;
+    var in_progress = deploy_in_progress(deployment);
     console.log(
       `state: ${deployment.state} (== 'ready': ${deployment.state == "ready"})`
     );
@@ -81,7 +81,7 @@ export default async function netlify_wait(
         site_id: site_id,
         deploy_id: deploy_id,
       });
-      in_progress = deployment.deploy_time == null;
+      in_progress = deploy_in_progress(deployment);
       console.log(`Got update. In progress: ${in_progress}`);
       console.log(deployment);
     }
