@@ -90,7 +90,7 @@ jobs:
             console.log("Importing custom script");
             const { default: netlify_wait } = await import('${{ github.workspace }}/.github/scripts/netlify_wait.js');
             console.log("Imported custom script. Calling...");
-            await netlify_wait(core, github, "${{ matrix.name }}", "${{ matrix.id }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
+            await netlify_wait(core, github, context, "${{ matrix.name }}", "${{ matrix.id }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
             console.log("Done");
       - id: deploy-action
         run: echo "${{ matrix.name }}-url=${{ steps.site-url.outputs.site-url }}" >> "$GITHUB_OUTPUT"
