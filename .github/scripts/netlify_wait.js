@@ -3,6 +3,7 @@ import { NetlifyAPI } from "netlify";
 // module.exports = async (core, site_id, title, token) => {
 export default async function netlify_wait(
   core,
+  github,
   site_name,
   site_id,
   title,
