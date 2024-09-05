@@ -40,6 +40,7 @@ jobs:
         if: always()
         with:
           script: |
+            console.log(JSON.stringify(context));
             const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
