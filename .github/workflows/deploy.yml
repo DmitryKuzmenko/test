@@ -40,6 +40,22 @@ jobs:
         if: always()
         with:
           script: |
+            const response = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              per_page: 100,
+              repo: context.repo.repo,
+            });
+            console.log(JSON.stringify(response));
+            const { data: list_comments } = response;
+            const get_comment = list_comments.forEach(({ id, body, user: { login } }) =>
+              console.log(`${login}: ${id} -> ${body}`)
+            );
+      - uses: actions/github-script@v7
+        name: comment after failure
+        if: always()
+        with:
+          script: |
             const status = "${{ job.status }}";
             let body = `Deployment result: ${status}`;
             if (status == "success") {
