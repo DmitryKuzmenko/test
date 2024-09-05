@@ -65,7 +65,7 @@ jobs:
         with:
           script: |
             const status = "${{ job.status }}";
-            let body = `Deployment result: ${status}`;
+            let body = `Deployment of [the recent commit](${context.payload.pull_request.head.sha}) result: ${status}`;
             if (status == "success") {
               body += "\nSome variable: ${{ github.event.pull_request.url }}--${{ env.SOME_VAR }}\nAlso here is empty var value: ${{ env.EMPTY_VAR }}"
             }
