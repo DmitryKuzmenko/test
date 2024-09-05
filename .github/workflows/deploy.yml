@@ -1,0 +1,182 @@
+name: Deploy
+run-name: Deploy conditions test
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - edited
+env:
+  SOME_VAR: some value
+  SITE_ID: 28291f48-2de2-4c95-a222-07e0a5feaa22
+  TITLE: gha-fullstack-deploy
+jobs:
+  deploy-job:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.state == 'open' && (
+        contains(github.event.pull_request.labels.*.name, 'deploy') ||
+        endsWith(github.event.pull_request.title, '[deploy]')
+      ) && (
+        contains(fromJSON('["opened", "reopened", "synchronize"]'), github.event.action) ||
+        github.event.action == 'labeled' && github.event.label.name == 'deploy' ||
+        github.event.action == 'edited' && endsWith(github.event.pull_request.title, '[deploy]')
+      )
+    steps:
+      - run: echo "Start"
+      - name: GH context
+        env:
+          GH: ${{ toJson(github)}} ${{ github.event.pull_request.state }}
+        run: |
+          echo -e "Github context:\n$GH"
+      # - name: Fail step
+      #   id: fail-step
+      #   run: |
+      #     asdfasdfasdf
+      - uses: actions/github-script@v7
+        name: Cleanup comments
+        if: always()
+        with:
+          script: |
+            console.log(JSON.stringify(context));
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              per_page: 100,
+              repo: context.repo.repo,
+            });
+            const bot_comments = comments.filter(
+              ({ body, user: { login } }) =>
+                login == "github-actions[bot]" && /^Deployment result/.test(body)
+            );
+            bot_comments.forEach(
+              async ({ id }) =>
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: id,
+                })
+            );
+      - uses: actions/github-script@v7
+        name: comment after failure
+        if: always()
+        with:
+          script: |
+            const status = "${{ job.status }}";
+            let body = `Deployment of [the recent commit](${context.payload.pull_request.head.sha}) result: ${status}`;
+            if (status == "success") {
+              body += "\nSome variable: ${{ github.event.pull_request.url }}--${{ env.SOME_VAR }}\nAlso here is empty var value: ${{ env.EMPTY_VAR }}"
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+  js-script:
+    name: Test JS script step
+    runs-on: ubuntu-latest
+    needs: deploy-job
+    outputs:
+      devlogin-url: ${{ steps.deploy-action.outputs.devlogin-url }}
+      petsafe-url: ${{ steps.deploy-action.outputs.petsafe-url }}
+      sportdog-url: ${{ steps.deploy-action.outputs.sportdog-url }}
+      kurgo-url: ${{ steps.deploy-action.outputs.kurgo-url }}
+      invisiblefence-url: ${{ steps.deploy-action.outputs.invisiblefence-url }}
+    strategy:
+      matrix:
+        include:
+          - name: devlogin
+            id: 8539d742-1926-418a-81de-eb7db9c15793
+          - name: petsafe
+            id: 8cd5e483-40c1-43d6-8459-fd5531b94aa8
+          - name: sportdog
+            id: 28291f48-2de2-4c95-a222-07e0a5feaa22
+          - name: kurgo
+            id: 5c214f8e-4401-49b1-a561-d0f5bbc503d5
+          - name: invisiblefence
+            id: 423b273d-fe1d-4dd8-bba9-5f4d6d79c529
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - run: |
+          yarn add -W ./.github/scripts/
+      - uses: actions/github-script@v7
+        name: check netlify status
+        id: site-url
+        with:
+          script: |
+            console.log("Importing custom script");
+            const { default: netlify_wait } = await import('${{ github.workspace }}/.github/scripts/netlify_wait.js');
+            console.log("Imported custom script. Calling...");
+            await netlify_wait(core, github, context, "${{ matrix.name }}", "${{ matrix.id }}", "${{ env.TITLE }}", "${{ secrets.N_TOKEN }}");
+            console.log("Done");
+      - id: deploy-action
+        run: echo "${{ matrix.name }}-url=${{ steps.site-url.outputs.site-url }}" >> "$GITHUB_OUTPUT"
+
+  test-output:
+    runs-on: ubuntu-latest
+    needs: js-script
+    steps:
+      - run: |
+          echo "OUT: devlogin: ${{ needs.js-script.outputs.devlogin-url }}"
+          echo "OUT: petsafe: ${{ needs.js-script.outputs.petsafe-url }}"
+          echo "OUT: sportdog: ${{ needs.js-script.outputs.sportdog-url }}"
+          echo "OUT: kurgo: ${{ needs.js-script.outputs.kurgo-url }}"
+          echo "OUT: invisiblefence: ${{ needs.js-script.outputs.invisiblefence-url }}"
+
+  js-job:
+    name: Test JS Job
+    runs-on: ubuntu-latest
+    needs: deploy-job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test JS Job
+        id: js-job
+        uses: ./.github/actions/js-action
+        with:
+          name: tester
+          id: ${{ env.SITE_ID }}
+          payload: '{ "key": "value", "key2": "value2" }'
+          token: ${{ secrets.N_TOKEN }}
+          title: ${{ env.TITLE }}
+
+  report-job:
+    needs: deploy-job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - run: npm install netlify
+      - uses: actions/github-script@v7
+        name: set check
+        with:
+          script: |
+            var run = true;
+            var count = 60;
+            async function countdown() {
+              console.log(`Countdown tick: ${count}`);
+              await new Promise((f) => setTimeout(f, 1000));
+              count--;
+              if (count <= 0) {
+                run = false;
+              }
+              console.log(`Countdown done: ${count}`);
+            }
+            async function test() {
+              console.log("Start countdown");
+              while (run) {
+                await countdown();
+              }
+              console.log("Stop countdown");
+            }
+            console.log("START");
+            await test();
+            console.log("DONE");
